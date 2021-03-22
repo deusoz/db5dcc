@@ -24,9 +24,9 @@ OC.L10N.register(
     "Sharing %1$s failed, could not find %2$s, maybe the server is currently unreachable or uses a self-signed certificate." : "Kunhavigo de  %1$s malsukcesis, ne eblis trovi %2$s; eble la servilo estas provizore neatingebla aŭ uzas memsubskribitan atestilon.",
     "Could not find share" : "Ne eblis trovi kunhavon",
     "Federated sharing" : "Federa kunhavado",
-    "You received \"%3$s\" as a remote share from %1$s (on behalf of %2$s)" : "Vi ricevis „%3$s“ kiel foran kunhavon el %1$s (nome de %2$s)",
+    "You received \"%3$s\" as a remote share from %4$s (%1$s) (on behalf of %5$s (%2$s))" : "Vi ricevis „%3$s“ kiel foran kunhavon el %4$s [%1$s]  (nome de %5$s [%2$s])",
     "You received {share} as a remote share from {user} (on behalf of {behalf})" : "Vi ricevis „{share}“ kiel foran kunhavon el {user} (nome de {behalf})",
-    "You received \"%3$s\" as a remote share from %1$s" : "Vi ricevis „%3$s“ kiel foran kunhavon el %1$s",
+    "You received \"%3$s\" as a remote share from %4$s (%1$s)" : "Vi ricevis „%3$s“ kiel foran kunhavon el %4$s (%1$s)",
     "You received {share} as a remote share from {user}" : "Vi ricevis „{share}“ kiel foran kunhavon el {user}",
     "Accept" : "Akcepti",
     "Decline" : "Malakcepti",
@@ -38,7 +38,6 @@ OC.L10N.register(
     "Federated Cloud Sharing" : "Federnuba kunhavigo",
     "Open documentation" : "Malfermi la dokumentaron",
     "Adjust how people can share between servers." : "Agordi, kiel oni povas kunhavigi inter serviloj.",
-    "Allow users on this server to send shares to other servers" : "Permesi al uzantoj en tiu ĉi servilo sendi kunhavojn al aliaj serviloj",
     "Allow users on this server to receive shares from other servers" : "Permesi al uzantoj en tiu ĉi servilo ricevi kunhavojn el aliaj serviloj",
     "Allow users on this server to send shares to groups on other servers" : "Permesi al uzantoj en tiu ĉi servilo sendi kunhavojn al grupoj de aliaj serviloj",
     "Allow users on this server to receive group shares from other servers" : "Permesi al uzantoj en tiu ĉi servilo ricevi kunhavojn el grupoj de aliaj serviloj",
@@ -51,7 +50,6 @@ OC.L10N.register(
     "Add to your website" : "Aldoni al via TTT-ejo",
     "Share with me via Nextcloud" : "Kunhavigi kun mi per Nextcloud",
     "HTML Code:" : "HTML-kodo:",
-    "Sharing %s failed, because this item is already shared with %s" : "Kunhavigo de %s malsukcesis, ĉar la ero jam kunhaviĝis kun %s",
-    "Sharing %s failed, could not find %s, maybe the server is currently unreachable or uses a self-signed certificate." : "Kunhavigo de %s malsukcesis, ne eblis trovi %s; eble la servilo estas provizore neatingebla aŭ uzas memsubskribitan atestilon."
+    "Allow users on this server to send shares to other servers" : "Permesi al uzantoj en tiu ĉi servilo sendi kunhavojn al aliaj serviloj"
 },
 "nplurals=2; plural=(n != 1);");

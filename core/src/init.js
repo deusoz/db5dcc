@@ -1,4 +1,5 @@
-/*
+/* globals Snap */
+/**
  * @copyright 2019 Christoph Wurst <christoph@winzerhof-wurst.at>
  *
  * @author 2019 Christoph Wurst <christoph@winzerhof-wurst.at>
@@ -22,25 +23,26 @@
 import _ from 'underscore'
 import $ from 'jquery'
 import moment from 'moment'
+import cssVars from 'css-vars-ponyfill'
 
-import {initSessionHeartBeat} from './session-heartbeat'
+import { initSessionHeartBeat } from './session-heartbeat'
 import OC from './OC/index'
-import {setUp as setUpContactsMenu} from './components/ContactsMenu'
-import {setUp as setUpMainMenu} from './components/MainMenu'
-import {setUp as setUpUserMenu} from './components/UserMenu'
+import { setUp as setUpContactsMenu } from './components/ContactsMenu'
+import { setUp as setUpMainMenu } from './components/MainMenu'
+import { setUp as setUpUserMenu } from './components/UserMenu'
 import PasswordConfirmation from './OC/password-confirmation'
 
 // keep in sync with core/css/variables.scss
-const breakpoint_mobile_width = 1024;
+const breakpointMobileWidth = 1024
 
 const resizeMenu = () => {
 	const appList = $('#appmenu li')
 	const rightHeaderWidth = $('.header-right').outerWidth()
 	const headerWidth = $('header').outerWidth()
-	const usePercentualAppMenuLimit = 0.33
-	const minAppsDesktop = 8
+	const usePercentualAppMenuLimit = 0.67
+	const minAppsDesktop = 12
 	let availableWidth = headerWidth - $('#nextcloud').outerWidth() - (rightHeaderWidth > 210 ? rightHeaderWidth : 210)
-	const isMobile = $(window).width() < breakpoint_mobile_width
+	const isMobile = $(window).width() < breakpointMobileWidth
 	if (!isMobile) {
 		availableWidth = availableWidth * usePercentualAppMenuLimit
 	}
@@ -90,21 +92,21 @@ const resizeMenu = () => {
 const initLiveTimestamps = () => {
 	// Update live timestamps every 30 seconds
 	setInterval(() => {
-		$('.live-relative-timestamp').each(function () {
+		$('.live-relative-timestamp').each(function() {
 			$(this).text(OC.Util.relativeModifiedDate(parseInt($(this).attr('data-timestamp'), 10)))
 		})
 	}, 30 * 1000)
 }
 
 /**
+ * Set users locale to moment.js as soon as possible
+ */
+moment.locale(OC.getLocale())
+
+/**
  * Initializes core
  */
 export const initCore = () => {
-	/**
-	 * Set users locale to moment.js as soon as possible
-	 */
-	moment.locale(OC.getLocale())
-
 	const userAgent = window.navigator.userAgent
 	const msie = userAgent.indexOf('MSIE ')
 	const trident = userAgent.indexOf('Trident/')
@@ -125,11 +127,11 @@ export const initCore = () => {
 			watch: true,
 			//  set edge < 16 as incompatible
 			onlyLegacy: !(/Edge\/([0-9]{2})\./i.test(navigator.userAgent)
-				&& parseInt(/Edge\/([0-9]{2})\./i.exec(navigator.userAgent)[1]) < 16)
+				&& parseInt(/Edge\/([0-9]{2})\./i.exec(navigator.userAgent)[1]) < 16),
 		})
 	}
 
-	$(window).on('unload.main', () => OC._unloadCalled = true)
+	$(window).on('unload.main', () => { OC._unloadCalled = true })
 	$(window).on('beforeunload.main', () => {
 		// super-trick thanks to http://stackoverflow.com/a/4651049
 		// in case another handler displays a confirmation dialog (ex: navigating away
@@ -150,14 +152,14 @@ export const initCore = () => {
 			}, 10000)
 		}, 1)
 	})
-	$(document).on('ajaxError.main', function (event, request, settings) {
+	$(document).on('ajaxError.main', function(event, request, settings) {
 		if (settings && settings.allowAuthErrors) {
 			return
 		}
 		OC._processAjaxError(request)
 	})
 
-	initSessionHeartBeat();
+	initSessionHeartBeat()
 
 	OC.registerMenu($('#expand'), $('#expanddiv'), false, true)
 
@@ -184,7 +186,7 @@ export const initCore = () => {
 			const caretPosition = $('.header-appname + .icon-caret').offset().left - 2
 			if (caretPosition > 255) {
 				// if the app name is longer than the menu, just put the triangle in the middle
-				return
+
 			} else {
 				$('head').append('<style id="menu-css-helper">#navigation:after { left: ' + caretPosition + 'px }</style>')
 			}
@@ -210,23 +212,79 @@ export const initCore = () => {
 			element: document.getElementById('app-content'),
 			disable: 'right',
 			maxPosition: 300, // $navigation-width
-			minDragDistance: 100
+			minDragDistance: 100,
 		})
 
 		$('#app-content').prepend('<div id="app-navigation-toggle" class="icon-menu" style="display:none" tabindex="0"></div>')
 
-		const toggleSnapperOnButton = () => {
-			if (snapper.state().state === 'left') {
-				snapper.close()
-			} else {
-				snapper.open('left')
+		// keep track whether snapper is currently animating, and
+		// prevent to call open or close while that is the case
+		// to avoid duplicating events (snap.js doesn't check this)
+		let animating = false
+		snapper.on('animating', () => {
+			// we need this because the trigger button
+			// is also implicitly wired to close by snapper
+			animating = true
+		})
+		snapper.on('animated', () => {
+			animating = false
+		})
+		snapper.on('start', () => {
+			// we need this because dragging triggers that
+			animating = true
+		})
+		snapper.on('end', () => {
+			// we need this because dragging stop triggers that
+			animating = false
+		})
+
+		// These are necessary because calling open or close
+		// on snapper during an animation makes it trigger an
+		// unfinishable animation, which itself will continue
+		// triggering animating events and cause high CPU load,
+		//
+		// Ref https://github.com/jakiestfu/Snap.js/issues/216
+		const oldSnapperOpen = snapper.open
+		const oldSnapperClose = snapper.close
+		const _snapperOpen = () => {
+			if (animating || snapper.state().state !== 'closed') {
+				return
+			}
+			oldSnapperOpen('left')
+		}
+
+		const _snapperClose = () => {
+			if (animating || snapper.state().state === 'closed') {
+				return
+			}
+			oldSnapperClose()
+		}
+
+		// Needs to be deferred to properly catch in-between
+		// events that snap.js is triggering after dragging.
+		//
+		// Skipped when running unit tests as we are not testing
+		// the snap.js workarounds...
+		if (!window.TESTING) {
+			snapper.open = () => {
+				_.defer(_snapperOpen)
+			}
+			snapper.close = () => {
+				_.defer(_snapperClose)
 			}
 		}
 
-		$('#app-navigation-toggle').click(toggleSnapperOnButton)
+		$('#app-navigation-toggle').click((e) => {
+			// close is implicit in the button by snap.js
+			if (snapper.state().state !== 'left') {
+				snapper.open()
+			}
+		})
 		$('#app-navigation-toggle').keypress(e => {
-			if (e.which === 13) {
-				toggleSnapperOnButton()
+			if (snapper.state().state === 'left') {
+				snapper.close()
+			} else {
+				snapper.open()
 			}
 		})
 
@@ -235,20 +293,20 @@ export const initCore = () => {
 		$appNavigation.delegate('a, :button', 'click', event => {
 			const $target = $(event.target)
 			// don't hide navigation when changing settings or adding things
-			if ($target.is('.app-navigation-noclose') ||
-				$target.closest('.app-navigation-noclose').length) {
+			if ($target.is('.app-navigation-noclose')
+				|| $target.closest('.app-navigation-noclose').length) {
 				return
 			}
-			if ($target.is('.app-navigation-entry-utils-menu-button') ||
-				$target.closest('.app-navigation-entry-utils-menu-button').length) {
+			if ($target.is('.app-navigation-entry-utils-menu-button')
+				|| $target.closest('.app-navigation-entry-utils-menu-button').length) {
 				return
 			}
-			if ($target.is('.add-new') ||
-				$target.closest('.add-new').length) {
+			if ($target.is('.add-new')
+				|| $target.closest('.add-new').length) {
 				return
 			}
-			if ($target.is('#app-settings') ||
-				$target.closest('#app-settings').length) {
+			if ($target.is('#app-settings')
+				|| $target.closest('#app-settings').length) {
 				return
 			}
 			snapper.close()
@@ -282,7 +340,7 @@ export const initCore = () => {
 		}
 
 		const toggleSnapperOnSize = () => {
-			if ($(window).width() > breakpoint_mobile_width) {
+			if ($(window).width() > breakpointMobileWidth) {
 				snapper.close()
 				snapper.disable()
 

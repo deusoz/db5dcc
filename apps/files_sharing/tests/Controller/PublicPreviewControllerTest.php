@@ -2,6 +2,8 @@
 /**
  * @copyright Copyright (c) 2016, Roeland Jago Douma <roeland@famdouma.nl>
  *
+ * @author Julius Härtl <jus@bitgrid.net>
+ * @author Morris Jobke <hey@morrisjobke.de>
  * @author Roeland Jago Douma <roeland@famdouma.nl>
  *
  * @license GNU AGPL version 3 or any later version
@@ -17,9 +19,10 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 namespace OCA\Files_Sharing\Tests\Controller;
 
 use OCA\Files_Sharing\Controller\PublicPreviewController;
@@ -39,14 +42,13 @@ use OCP\Share\Exceptions\ShareNotFound;
 use OCP\Share\IManager;
 use OCP\Share\IShare;
 use PHPUnit\Framework\MockObject\MockObject;
-use Punic\Data;
 use Test\TestCase;
 
 class PublicPreviewControllerTest extends TestCase {
 
-	/** @var IPreview|\PHPUnit_Framework_MockObject_MockObject */
+	/** @var IPreview|\PHPUnit\Framework\MockObject\MockObject */
 	private $previewManager;
-	/** @var IManager|\PHPUnit_Framework_MockObject_MockObject */
+	/** @var IManager|\PHPUnit\Framework\MockObject\MockObject */
 	private $shareManager;
 	/** @var ITimeFactory|MockObject */
 	private $timeFactory;
@@ -54,7 +56,7 @@ class PublicPreviewControllerTest extends TestCase {
 	/** @var PublicPreviewController */
 	private $controller;
 
-	public function setUp() {
+	protected function setUp(): void {
 		parent::setUp();
 
 		$this->previewManager = $this->createMock(IPreview::class);

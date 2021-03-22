@@ -17,7 +17,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -26,6 +26,7 @@ namespace OC\Lockdown\Filesystem;
 use OC\Files\Cache\CacheEntry;
 use OCP\Constants;
 use OCP\Files\Cache\ICache;
+use OCP\Files\Cache\ICacheEntry;
 use OCP\Files\FileInfo;
 use OCP\Files\Search\ISearchQuery;
 
@@ -123,4 +124,7 @@ class NullCache implements ICache {
 		return $path;
 	}
 
+	public function copyFromCache(ICache $sourceCache, ICacheEntry $sourceEntry, string $targetPath): int {
+		throw new \OC\ForbiddenException('This request is not allowed to access the filesystem');
+	}
 }

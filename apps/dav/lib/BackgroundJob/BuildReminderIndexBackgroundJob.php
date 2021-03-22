@@ -1,9 +1,13 @@
 <?php
+
 declare(strict_types=1);
+
 /**
  * @copyright 2019 Georg Ehrke <oc.list@georgehrke.com>
  *
+ * @author Christoph Wurst <christoph@winzerhof-wurst.at>
  * @author Georg Ehrke <oc.list@georgehrke.com>
+ * @author Roeland Jago Douma <roeland@famdouma.nl>
  *
  * @license GNU AGPL version 3 or any later version
  *
@@ -18,15 +22,16 @@ declare(strict_types=1);
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 namespace OCA\DAV\BackgroundJob;
 
-use OCP\BackgroundJob\QueuedJob;
 use OCA\DAV\CalDAV\Reminder\ReminderService;
 use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\BackgroundJob\IJobList;
+use OCP\BackgroundJob\QueuedJob;
 use OCP\IDBConnection;
 use OCP\ILogger;
 
@@ -112,7 +117,7 @@ class BuildReminderIndexBackgroundJob extends QueuedJob {
 			->orderBy('id', 'ASC');
 
 		$stmt = $query->execute();
-		while($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+		while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
 			$offset = $row['id'];
 			if (is_resource($row['calendardata'])) {
 				$row['calendardata'] = stream_get_contents($row['calendardata']);
@@ -121,7 +126,7 @@ class BuildReminderIndexBackgroundJob extends QueuedJob {
 
 			try {
 				$this->reminderService->onTouchCalendarObject('\OCA\DAV\CalDAV\CalDavBackend::createCalendarObject', $row);
-			} catch(\Exception $ex) {
+			} catch (\Exception $ex) {
 				$this->logger->logException($ex);
 			}
 

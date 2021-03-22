@@ -1,4 +1,4 @@
-/*
+/**
  * @copyright 2019 Christoph Wurst <christoph@winzerhof-wurst.at>
  *
  * @author 2019 Christoph Wurst <christoph@winzerhof-wurst.at>
@@ -20,6 +20,7 @@
  */
 
 import $ from 'jquery'
+import { generateFilePath } from '@nextcloud/router'
 
 const loadedScripts = {}
 const loadedStyles = []
@@ -29,14 +30,15 @@ const loadedStyles = []
  * the event handler will be called directly
  * @param {string} app the app id to which the script belongs
  * @param {string} script the filename of the script
- * @param ready event handler to be called when the script is loaded
+ * @param {Function} ready event handler to be called when the script is loaded
+ * @returns {jQuery.Deferred}
  * @deprecated 16.0.0 Use OCP.Loader.loadScript
  */
 export const addScript = (app, script, ready) => {
 	console.warn('OC.addScript is deprecated, use OCP.Loader.loadScript instead')
 
 	let deferred
-	const path = OC.filePath(app, 'js', script + '.js')
+	const path = generateFilePath(app, 'js', script + '.js')
 	if (!loadedScripts[path]) {
 		deferred = $.Deferred()
 		$.getScript(path, () => deferred.resolve())
@@ -58,7 +60,7 @@ export const addScript = (app, script, ready) => {
 export const addStyle = (app, style) => {
 	console.warn('OC.addStyle is deprecated, use OCP.Loader.loadStylesheet instead')
 
-	const path = OC.filePath(app, 'css', style + '.css')
+	const path = generateFilePath(app, 'css', style + '.css')
 	if (loadedStyles.indexOf(path) === -1) {
 		loadedStyles.push(path)
 		if (document.createStyleSheet) {

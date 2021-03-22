@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 /**
  * @copyright Copyright (c) 2019, Roeland Jago Douma <roeland@famdouma.nl>
  *
@@ -18,7 +20,7 @@ declare(strict_types=1);
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -31,7 +33,7 @@ interface IGetRealUIDBackend {
 
 	/**
 	 * Some backends accept different UIDs than what is the internal UID to be used.
-	 * For example the database backend accepts differnt cased UIDs in all the functions
+	 * For example the database backend accepts different cased UIDs in all the functions
 	 * but the internal UID that is to be used should be correctly cased.
 	 *
 	 * This little function makes sure that the used UID will be correct hen using the user object

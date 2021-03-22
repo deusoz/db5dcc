@@ -13,17 +13,17 @@ OC.L10N.register(
     "{user} mentioned you in a comment on “{file}”" : "{user} нь таныг “{file}”-ын сэтгэгдэлд дурдсан",
     "Edit comment" : "Сэтгэгдэл засах",
     "Delete comment" : "Сэтгэгдэл устгах",
+    "No comments yet, start the conversation!" : "Сэтгэгдэл байхгүй байна",
+    "Retry" : "Дахин оролдох",
+    "Comment" : "Сэтгэгдэл",
     "New comment …" : "Шинэ сэтгэгдэл",
     "Post" : "Нийтлэл",
     "Cancel" : "Цуцлах",
     "[Deleted user]" : "[Хэрэглэгч устгагдсан]",
-    "No comments yet, start the conversation!" : "Сэтгэгдэл байхгүй байна",
     "More comments …" : "Дараагийн сэтгэгдэлүүд",
     "Save" : "Хадгалах",
     "Allowed characters {count} of {max}" : "{max} боломжойгоос {count} тэмдэгт орсон байна",
     "Error occurred while updating comment with id {id}" : "{id} дугаартай сэтгэгдлийг шинэчилэхэд алдаа гарлаа",
-    "Error occurred while posting comment" : "Сэтгэгдлийг хадгалахад алдаа гарлаа",
-    "Comment" : "Сэтгэгдэл",
-    "%1$s mentioned you in a comment on “%2$s”" : "%1$s нь таныг “%2$s”-ы сэтгэгдэлд дурдсан"
+    "Error occurred while posting comment" : "Сэтгэгдлийг хадгалахад алдаа гарлаа"
 },
 "nplurals=2; plural=(n != 1);");

@@ -1,11 +1,15 @@
 <?php
+
 declare(strict_types=1);
+
 /**
  * @copyright Copyright (c) 2019, Thomas Citharel
  * @copyright Copyright (c) 2019, Georg Ehrke
  *
- * @author Thomas Citharel <tcit@tcit.fr>
+ * @author Christoph Wurst <christoph@winzerhof-wurst.at>
  * @author Georg Ehrke <oc.list@georgehrke.com>
+ * @author Joas Schilling <coding@schilljs.com>
+ * @author Roeland Jago Douma <roeland@famdouma.nl>
  *
  * @license GNU AGPL version 3 or any later version
  *
@@ -20,9 +24,10 @@ declare(strict_types=1);
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 namespace OCA\DAV\CalDAV\Reminder\NotificationProvider;
 
 use OCA\DAV\CalDAV\Reminder\INotificationProvider;
@@ -30,8 +35,8 @@ use OCP\IConfig;
 use OCP\IL10N;
 use OCP\ILogger;
 use OCP\IURLGenerator;
-use OCP\L10N\IFactory as L10NFactory;
 use OCP\IUser;
+use OCP\L10N\IFactory as L10NFactory;
 use Sabre\VObject\Component\VEvent;
 use Sabre\VObject\DateTimeParser;
 use Sabre\VObject\Property;
@@ -41,7 +46,7 @@ use Sabre\VObject\Property;
  *
  * @package OCA\DAV\CalDAV\Reminder\NotificationProvider
  */
-abstract class AbstractProvider implements INotificationProvider  {
+abstract class AbstractProvider implements INotificationProvider {
 
 	/** @var string */
 	public const NOTIFICATION_TYPE = '';
@@ -50,7 +55,7 @@ abstract class AbstractProvider implements INotificationProvider  {
 	protected $logger;
 
 	/** @var L10NFactory */
-	private $l10nFactory;
+	protected $l10nFactory;
 
 	/** @var IL10N[] */
 	private $l10ns;
@@ -90,7 +95,7 @@ abstract class AbstractProvider implements INotificationProvider  {
 	 */
 	abstract public function send(VEvent $vevent,
 						   string $calendarDisplayName,
-						   array $users=[]): void;
+						   array $users = []): void;
 
 	/**
 	 * @return string

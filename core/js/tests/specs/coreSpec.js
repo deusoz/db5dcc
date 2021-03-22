@@ -35,224 +35,6 @@ describe('Core base tests', function() {
 			expect(OC.appswebroots).toBeDefined();
 		});
 	});
-	describe('basename', function() {
-		it('Returns the nothing if no file name given', function() {
-			expect(OC.basename('')).toEqual('');
-		});
-		it('Returns the nothing if dir is root', function() {
-			expect(OC.basename('/')).toEqual('');
-		});
-		it('Returns the same name if no path given', function() {
-			expect(OC.basename('some name.txt')).toEqual('some name.txt');
-		});
-		it('Returns the base name if root path given', function() {
-			expect(OC.basename('/some name.txt')).toEqual('some name.txt');
-		});
-		it('Returns the base name if double root path given', function() {
-			expect(OC.basename('//some name.txt')).toEqual('some name.txt');
-		});
-		it('Returns the base name if subdir given without root', function() {
-			expect(OC.basename('subdir/some name.txt')).toEqual('some name.txt');
-		});
-		it('Returns the base name if subdir given with root', function() {
-			expect(OC.basename('/subdir/some name.txt')).toEqual('some name.txt');
-		});
-		it('Returns the base name if subdir given with double root', function() {
-			expect(OC.basename('//subdir/some name.txt')).toEqual('some name.txt');
-		});
-		it('Returns the base name if subdir has dot', function() {
-			expect(OC.basename('/subdir.dat/some name.txt')).toEqual('some name.txt');
-		});
-		it('Returns dot if file name is dot', function() {
-			expect(OC.basename('/subdir/.')).toEqual('.');
-		});
-		// TODO: fix the source to make it work like PHP's basename
-		it('Returns the dir itself if no file name given', function() {
-			// TODO: fix the source to make it work like PHP's dirname
-			// expect(OC.basename('subdir/')).toEqual('subdir');
-			expect(OC.basename('subdir/')).toEqual('');
-		});
-		it('Returns the dir itself if no file name given with root', function() {
-			// TODO: fix the source to make it work like PHP's dirname
-			// expect(OC.basename('/subdir/')).toEqual('subdir');
-			expect(OC.basename('/subdir/')).toEqual('');
-		});
-	});
-	describe('dirname', function() {
-		it('Returns the nothing if no file name given', function() {
-			expect(OC.dirname('')).toEqual('');
-		});
-		it('Returns the root if dir is root', function() {
-			// TODO: fix the source to make it work like PHP's dirname
-			// expect(OC.dirname('/')).toEqual('/');
-			expect(OC.dirname('/')).toEqual('');
-		});
-		it('Returns the root if dir is double root', function() {
-			// TODO: fix the source to make it work like PHP's dirname
-			// expect(OC.dirname('//')).toEqual('/');
-			expect(OC.dirname('//')).toEqual('/'); // oh no...
-		});
-		it('Returns dot if dir is dot', function() {
-			expect(OC.dirname('.')).toEqual('.');
-		});
-		it('Returns dot if no root given', function() {
-			// TODO: fix the source to make it work like PHP's dirname
-			// expect(OC.dirname('some dir')).toEqual('.');
-			expect(OC.dirname('some dir')).toEqual('some dir'); // oh no...
-		});
-		it('Returns the dir name if file name and root path given', function() {
-			// TODO: fix the source to make it work like PHP's dirname
-			// expect(OC.dirname('/some name.txt')).toEqual('/');
-			expect(OC.dirname('/some name.txt')).toEqual('');
-		});
-		it('Returns the dir name if double root path given', function() {
-			expect(OC.dirname('//some name.txt')).toEqual('/'); // how lucky...
-		});
-		it('Returns the dir name if subdir given without root', function() {
-			expect(OC.dirname('subdir/some name.txt')).toEqual('subdir');
-		});
-		it('Returns the dir name if subdir given with root', function() {
-			expect(OC.dirname('/subdir/some name.txt')).toEqual('/subdir');
-		});
-		it('Returns the dir name if subdir given with double root', function() {
-			// TODO: fix the source to make it work like PHP's dirname
-			// expect(OC.dirname('//subdir/some name.txt')).toEqual('/subdir');
-			expect(OC.dirname('//subdir/some name.txt')).toEqual('//subdir'); // oh...
-		});
-		it('Returns the dir name if subdir has dot', function() {
-			expect(OC.dirname('/subdir.dat/some name.txt')).toEqual('/subdir.dat');
-		});
-		it('Returns the dir name if file name is dot', function() {
-			expect(OC.dirname('/subdir/.')).toEqual('/subdir');
-		});
-		it('Returns the dir name if no file name given', function() {
-			expect(OC.dirname('subdir/')).toEqual('subdir');
-		});
-		it('Returns the dir name if no file name given with root', function() {
-			expect(OC.dirname('/subdir/')).toEqual('/subdir');
-		});
-	});
-	describe('escapeHTML', function() {
-		it('Returns nothing if no string was given', function() {
-			expect(escapeHTML('')).toEqual('');
-		});
-		it('Returns a sanitized string if a string containing HTML is given', function() {
-			expect(escapeHTML('There needs to be a <script>alert(\"Unit\" + \'test\')</script> for it!')).toEqual('There needs to be a &lt;script&gt;alert(&quot;Unit&quot; + &#039;test&#039;)&lt;/script&gt; for it!');
-		});
-		it('Returns the string without modification if no potentially dangerous character is passed.', function() {
-			expect(escapeHTML('This is a good string without HTML.')).toEqual('This is a good string without HTML.');
-		});
-	});
-	describe('joinPaths', function() {
-		it('returns empty string with no or empty arguments', function() {
-			expect(OC.joinPaths()).toEqual('');
-			expect(OC.joinPaths('')).toEqual('');
-			expect(OC.joinPaths('', '')).toEqual('');
-		});
-		it('returns joined path sections', function() {
-			expect(OC.joinPaths('abc')).toEqual('abc');
-			expect(OC.joinPaths('abc', 'def')).toEqual('abc/def');
-			expect(OC.joinPaths('abc', 'def', 'ghi')).toEqual('abc/def/ghi');
-		});
-		it('keeps leading slashes', function() {
-			expect(OC.joinPaths('/abc')).toEqual('/abc');
-			expect(OC.joinPaths('/abc', '')).toEqual('/abc');
-			expect(OC.joinPaths('', '/abc')).toEqual('/abc');
-			expect(OC.joinPaths('/abc', 'def')).toEqual('/abc/def');
-			expect(OC.joinPaths('/abc', 'def', 'ghi')).toEqual('/abc/def/ghi');
-		});
-		it('keeps trailing slashes', function() {
-			expect(OC.joinPaths('', 'abc/')).toEqual('abc/');
-			expect(OC.joinPaths('abc/')).toEqual('abc/');
-			expect(OC.joinPaths('abc/', '')).toEqual('abc/');
-			expect(OC.joinPaths('abc', 'def/')).toEqual('abc/def/');
-			expect(OC.joinPaths('abc', 'def', 'ghi/')).toEqual('abc/def/ghi/');
-		});
-		it('splits paths in specified strings and discards extra slashes', function() {
-			expect(OC.joinPaths('//abc//')).toEqual('/abc/');
-			expect(OC.joinPaths('//abc//def//')).toEqual('/abc/def/');
-			expect(OC.joinPaths('//abc//', '//def//')).toEqual('/abc/def/');
-			expect(OC.joinPaths('//abc//', '//def//', '//ghi//')).toEqual('/abc/def/ghi/');
-			expect(OC.joinPaths('//abc//def//', '//ghi//jkl/mno/', '//pqr//'))
-				.toEqual('/abc/def/ghi/jkl/mno/pqr/');
-			expect(OC.joinPaths('/abc', '/def')).toEqual('/abc/def');
-			expect(OC.joinPaths('/abc/', '/def')).toEqual('/abc/def');
-			expect(OC.joinPaths('/abc/', 'def')).toEqual('/abc/def');
-		});
-		it('discards empty sections', function() {
-			expect(OC.joinPaths('abc', '', 'def')).toEqual('abc/def');
-		});
-		it('returns root if only slashes', function() {
-			expect(OC.joinPaths('//')).toEqual('/');
-			expect(OC.joinPaths('/', '/')).toEqual('/');
-			expect(OC.joinPaths('/', '//', '/')).toEqual('/');
-		});
-	});
-	describe('isSamePath', function() {
-		it('recognizes empty paths are equal', function() {
-			expect(OC.isSamePath('', '')).toEqual(true);
-			expect(OC.isSamePath('/', '')).toEqual(true);
-			expect(OC.isSamePath('//', '')).toEqual(true);
-			expect(OC.isSamePath('/', '/')).toEqual(true);
-			expect(OC.isSamePath('/', '//')).toEqual(true);
-		});
-		it('recognizes path with single sections as equal regardless of extra slashes', function() {
-			expect(OC.isSamePath('abc', 'abc')).toEqual(true);
-			expect(OC.isSamePath('/abc', 'abc')).toEqual(true);
-			expect(OC.isSamePath('//abc', 'abc')).toEqual(true);
-			expect(OC.isSamePath('abc', '/abc')).toEqual(true);
-			expect(OC.isSamePath('abc/', 'abc')).toEqual(true);
-			expect(OC.isSamePath('abc/', 'abc/')).toEqual(true);
-			expect(OC.isSamePath('/abc/', 'abc/')).toEqual(true);
-			expect(OC.isSamePath('/abc/', '/abc/')).toEqual(true);
-			expect(OC.isSamePath('//abc/', '/abc/')).toEqual(true);
-			expect(OC.isSamePath('//abc//', '/abc/')).toEqual(true);
-
-			expect(OC.isSamePath('abc', 'def')).toEqual(false);
-			expect(OC.isSamePath('/abc', 'def')).toEqual(false);
-			expect(OC.isSamePath('//abc', 'def')).toEqual(false);
-			expect(OC.isSamePath('abc', '/def')).toEqual(false);
-			expect(OC.isSamePath('abc/', 'def')).toEqual(false);
-			expect(OC.isSamePath('abc/', 'def/')).toEqual(false);
-			expect(OC.isSamePath('/abc/', 'def/')).toEqual(false);
-			expect(OC.isSamePath('/abc/', '/def/')).toEqual(false);
-			expect(OC.isSamePath('//abc/', '/def/')).toEqual(false);
-			expect(OC.isSamePath('//abc//', '/def/')).toEqual(false);
-		});
-		it('recognizes path with multiple sections as equal regardless of extra slashes', function() {
-			expect(OC.isSamePath('abc/def', 'abc/def')).toEqual(true);
-			expect(OC.isSamePath('/abc/def', 'abc/def')).toEqual(true);
-			expect(OC.isSamePath('abc/def', '/abc/def')).toEqual(true);
-			expect(OC.isSamePath('abc/def/', '/abc/def/')).toEqual(true);
-			expect(OC.isSamePath('/abc/def/', '/abc/def/')).toEqual(true);
-			expect(OC.isSamePath('/abc/def/', 'abc/def/')).toEqual(true);
-			expect(OC.isSamePath('//abc/def/', 'abc/def/')).toEqual(true);
-			expect(OC.isSamePath('//abc/def//', 'abc/def/')).toEqual(true);
-
-			expect(OC.isSamePath('abc/def', 'abc/ghi')).toEqual(false);
-			expect(OC.isSamePath('/abc/def', 'abc/ghi')).toEqual(false);
-			expect(OC.isSamePath('abc/def', '/abc/ghi')).toEqual(false);
-			expect(OC.isSamePath('abc/def/', '/abc/ghi/')).toEqual(false);
-			expect(OC.isSamePath('/abc/def/', '/abc/ghi/')).toEqual(false);
-			expect(OC.isSamePath('/abc/def/', 'abc/ghi/')).toEqual(false);
-			expect(OC.isSamePath('//abc/def/', 'abc/ghi/')).toEqual(false);
-			expect(OC.isSamePath('//abc/def//', 'abc/ghi/')).toEqual(false);
-		});
-		it('recognizes path entries with dot', function() {
-			expect(OC.isSamePath('.', '')).toEqual(true);
-			expect(OC.isSamePath('.', '.')).toEqual(true);
-			expect(OC.isSamePath('.', '/')).toEqual(true);
-			expect(OC.isSamePath('/.', '/')).toEqual(true);
-			expect(OC.isSamePath('/./', '/')).toEqual(true);
-			expect(OC.isSamePath('/./', '/.')).toEqual(true);
-			expect(OC.isSamePath('/./', '/./')).toEqual(true);
-			expect(OC.isSamePath('/./', '/./')).toEqual(true);
-
-			expect(OC.isSamePath('a/./b', 'a/b')).toEqual(true);
-			expect(OC.isSamePath('a/b/.', 'a/b')).toEqual(true);
-			expect(OC.isSamePath('./a/b', 'a/b')).toEqual(true);
-		});
-	});
 	describe('filePath', function() {
 		beforeEach(function() {
 			OC.webroot = 'http://localhost';
@@ -271,29 +53,6 @@ describe('Core base tests', function() {
 		it('Routes PHP files via index.php,' , function() {
 			expect(OC.filePath('core', 'ajax', 'test.php')).toEqual('http://localhost/index.php/core/ajax/test.php');
 			expect(OC.filePath('files', 'ajax', 'test.php')).toEqual('http://localhost/index.php/apps/files/ajax/test.php');
-		});
-	});
-	describe('getCanonicalLocale', function() {
-		var oldLocale;
-
-		beforeEach(function() {
-			oldLocale = $('html').data('locale')
-		});
-		afterEach(function() {
-			$('html').data('locale', oldLocale)
-		});
-
-		it("Returns primary locales as is", function() {
-			$('html').data('locale', 'de')
-			expect(OC.getCanonicalLocale()).toEqual('de');
-			$('html').data('locale', 'zu')
-			expect(OC.getCanonicalLocale()).toEqual('zu');
-		});
-		it("Returns extended locales with hyphens", function() {
-			$('html').data('locale', 'az_Cyrl_AZ')
-			expect(OC.getCanonicalLocale()).toEqual('az-Cyrl-AZ');
-			$('html').data('locale', 'de_DE')
-			expect(OC.getCanonicalLocale()).toEqual('de-DE');
 		});
 	});
 	describe('Link functions', function() {
@@ -582,71 +341,6 @@ describe('Core base tests', function() {
 		});
 	});
 	describe('Util', function() {
-		var locale;
-		var localeStub;
-
-		beforeEach(function() {
-			locale = OC.getCanonicalLocale();
-			localeStub = sinon.stub(OC, 'getCanonicalLocale');
-			localeStub.returns(locale);
-		});
-
-		afterEach(function() {
-			localeStub.restore();
-		});
-
-		describe('humanFileSize', function() {
-			// cit() will skip tests if toLocaleString() is not supported.
-			// See https://github.com/ariya/phantomjs/issues/12581
-			//
-			// Please run these tests in Chrome/Firefox manually.
-			var cit = 4.2.toLocaleString("de") !== "4,2" ? xit : it;
-
-			it('renders file sizes with the correct unit', function() {
-				var data = [
-					[0, '0 B'],
-					["0", '0 B'],
-					["A", 'NaN B'],
-					[125, '125 B'],
-					[128000, '125 KB'],
-					[128000000, '122.1 MB'],
-					[128000000000, '119.2 GB'],
-					[128000000000000, '116.4 TB']
-				];
-				for (var i = 0; i < data.length; i++) {
-					expect(OC.Util.humanFileSize(data[i][0])).toEqual(data[i][1]);
-				}
-			});
-			it('renders file sizes with the correct unit for small sizes', function() {
-				var data = [
-					[0, '0 KB'],
-					[125, '< 1 KB'],
-					[128000, '125 KB'],
-					[128000000, '122.1 MB'],
-					[128000000000, '119.2 GB'],
-					[128000000000000, '116.4 TB']
-				];
-				for (var i = 0; i < data.length; i++) {
-					expect(OC.Util.humanFileSize(data[i][0], true)).toEqual(data[i][1]);
-				}
-			});
-			cit('renders file sizes with the correct locale', function() {
-				localeStub.returns("de");
-				var data = [
-					[0, '0 B'],
-					["0", '0 B'],
-					["A", 'NaN B'],
-					[125, '125 B'],
-					[128000, '125 KB'],
-					[128000000, '122,1 MB'],
-					[128000000000, '119,2 GB'],
-					[128000000000000, '116,4 TB']
-				];
-				for (var i = 0; i < data.length; i++) {
-					expect(OC.Util.humanFileSize(data[i][0])).toEqual(data[i][1]);
-				}
-			});
-		});
 		describe('computerFileSize', function() {
 			it('correctly parses file sizes from a human readable formated string', function() {
 				var data = [
@@ -895,7 +589,6 @@ describe('Core base tests', function() {
 		});
 	});
 	describe('Notifications', function() {
-		var showSpy;
 		var showHtmlSpy;
 		var clock;
 
@@ -912,118 +605,106 @@ describe('Core base tests', function() {
 
 		beforeEach(function() {
 			clock = sinon.useFakeTimers();
-			showSpy = sinon.spy(OCP.Toast, 'message');
-
-			$('#testArea').append('<div id="content"></div>');
 		});
 		afterEach(function() {
-			showSpy.restore();
 			// jump past animations
 			clock.tick(10000);
 			clock.restore();
-			$('#testArea .toastify').remove();
+			$('body .toastify').remove();
 		});
 		describe('showTemporary', function() {
 			it('shows a plain text notification with default timeout', function() {
 				OC.Notification.showTemporary('My notification test');
 
-				expect(showSpy.calledOnce).toEqual(true);
-				expect(showSpy.firstCall.args[0]).toEqual('My notification test');
-				//expect(showSpy.firstCall.args[1]).toEqual({isHTML: false, timeout: 7});
-
-				var $row = $('#testArea .toastify');
+				var $row = $('body .toastify');
 				expect($row.length).toEqual(1);
 				expect(getNotificationText($row)).toEqual('My notification test');
 			});
 			it('shows a HTML notification with default timeout', function() {
 				OC.Notification.showTemporary('<a>My notification test</a>', { isHTML: true });
 
-				expect(showSpy.calledOnce).toEqual(true);
-				expect(showSpy.firstCall.args[0]).toEqual('<a>My notification test</a>');
-				expect(showSpy.firstCall.args[1].isHTML).toEqual(true)
-
-				var $row = $('#testArea .toastify');
+				var $row = $('body .toastify');
 				expect($row.length).toEqual(1);
 				expect(getNotificationText($row)).toEqual('<a>My notification test</a>');
 			});
 			it('hides itself after 7 seconds', function() {
 				OC.Notification.showTemporary('');
 
-				var $row = $('#testArea .toastify');
+				var $row = $('body .toastify');
 				expect($row.length).toEqual(1);
 
 				// travel in time +7000 milliseconds
 				clock.tick(7500);
 
-				$row = $('#testArea .toastify');
+				$row = $('body .toastify');
 				expect($row.length).toEqual(0);
 			});
 			it('hides itself after a given time', function() {
-				OC.Notification.showTemporary('', {timeout: 10});
+				OC.Notification.showTemporary('', {timeout: 10000});
 
-				var $row = $('#testArea .toastify');
+				var $row = $('body .toastify');
 				expect($row.length).toEqual(1);
 
 				// travel in time +7000 milliseconds
 				clock.tick(7500);
 
-				$row = $('#testArea .toastify');
+				$row = $('body .toastify');
 				expect($row.length).toEqual(1);
 
 				// travel in time another 4000 milliseconds
 				clock.tick(4000);
 
-				$row = $('#testArea .toastify');
+				$row = $('body .toastify');
 				expect($row.length).toEqual(0);
 			});
 		});
 		describe('show', function() {
 			it('hides itself after a given time', function() {
-				OC.Notification.show('', {timeout: 10});
+				OC.Notification.show('', {timeout: 10000});
 
-				var $row = $('#testArea .toastify');
+				var $row = $('body .toastify');
 				expect($row.length).toEqual(1);
 
 				clock.tick(11500);
 
-				$row = $('#testArea .toastify');
+				$row = $('body .toastify');
 				expect($row.length).toEqual(0);
 			});
 			it('does not hide itself if no timeout given to show', function() {
 				OC.Notification.show('');
 
-				var $row = $('#testArea .toastify');
+				var $row = $('body .toastify');
 				expect($row.length).toEqual(1);
 
 				// travel in time +1000 seconds
 				clock.tick(1000000);
 
-				$row = $('#testArea .toastify');
+				$row = $('body .toastify');
 				expect($row.length).toEqual(1);
 			});
 		});
 		describe('showHtml', function() {
 			it('hides itself after a given time', function() {
-				OC.Notification.showHtml('<p></p>', {timeout: 10});
+				OC.Notification.showHtml('<p></p>', {timeout: 10000});
 
-				var $row = $('#testArea .toastify');
+				var $row = $('body .toastify');
 				expect($row.length).toEqual(1);
 
 				clock.tick(11500);
 
-				$row = $('#testArea .toastify');
+				$row = $('body .toastify');
 				expect($row.length).toEqual(0);
 			});
 			it('does not hide itself if no timeout given to show', function() {
 				OC.Notification.showHtml('<p></p>');
 
-				var $row = $('#testArea .toastify');
+				var $row = $('body .toastify');
 				expect($row.length).toEqual(1);
 
 				// travel in time +1000 seconds
 				clock.tick(1000000);
 
-				$row = $('#testArea .toastify');
+				$row = $('body .toastify');
 				expect($row.length).toEqual(1);
 			});
 		});
@@ -1033,7 +714,7 @@ describe('Core base tests', function() {
 
 				var notification = OC.Notification.showTemporary('');
 
-				var $row = $('#testArea .toastify');
+				var $row = $('body .toastify');
 				expect($row.length).toEqual(1);
 
 				OC.Notification.hide(notification, hideCallback);
@@ -1041,7 +722,7 @@ describe('Core base tests', function() {
 				// Give time to the hide animation to finish
 				clock.tick(1000);
 
-				$row = $('#testArea .toastify');
+				$row = $('body .toastify');
 				expect($row.length).toEqual(0);
 
 				expect(hideCallback.calledOnce).toEqual(true);
@@ -1049,9 +730,9 @@ describe('Core base tests', function() {
 			it('hides a notification before its timeout expires', function() {
 				var hideCallback = sinon.spy();
 
-				var notification = OC.Notification.show('', {timeout: 10});
+				var notification = OC.Notification.show('', {timeout: 10000});
 
-				var $row = $('#testArea .toastify');
+				var $row = $('body .toastify');
 				expect($row.length).toEqual(1);
 
 				OC.Notification.hide(notification, hideCallback);
@@ -1059,7 +740,7 @@ describe('Core base tests', function() {
 				// Give time to the hide animation to finish
 				clock.tick(1000);
 
-				$row = $('#testArea .toastify');
+				$row = $('body .toastify');
 				expect($row.length).toEqual(0);
 
 				expect(hideCallback.calledOnce).toEqual(true);
@@ -1069,7 +750,7 @@ describe('Core base tests', function() {
 
 				var notification = OC.Notification.show('');
 
-				var $row = $('#testArea .toastify');
+				var $row = $('body .toastify');
 				expect($row.length).toEqual(1);
 
 				OC.Notification.hide(notification, hideCallback);
@@ -1077,7 +758,7 @@ describe('Core base tests', function() {
 				// Give time to the hide animation to finish
 				clock.tick(1000);
 
-				$row = $('#testArea .toastify');
+				$row = $('body .toastify');
 				expect($row.length).toEqual(0);
 
 				expect(hideCallback.calledOnce).toEqual(true);
@@ -1085,10 +766,10 @@ describe('Core base tests', function() {
 		});
 		it('cumulates several notifications', function() {
 			var $row1 = OC.Notification.showTemporary('One');
-			var $row2 = OC.Notification.showTemporary('Two', {timeout: 2});
+			var $row2 = OC.Notification.showTemporary('Two', {timeout: 2000});
 			var $row3 = OC.Notification.showTemporary('Three');
 
-			var $el = $('#testArea');
+			var $el = $('body');
 			var $rows = $el.find('.toastify');
 			expect($rows.length).toEqual(3);
 
@@ -1108,7 +789,7 @@ describe('Core base tests', function() {
 			var $row1 = OC.Notification.show('One');
 			var $row2 = OC.Notification.show('Two');
 
-			var $el = $('#testArea');
+			var $el = $('body');
 			var $rows = $el.find('.toastify');
 			expect($rows.length).toEqual(2);
 
@@ -1222,11 +903,15 @@ describe('Core base tests', function() {
 
 		beforeEach(function() {
 			snapConstructorStub = sinon.stub(window, 'Snap');
-
 			snapperStub = {};
+
 			snapperStub.enable = sinon.stub();
 			snapperStub.disable = sinon.stub();
 			snapperStub.close = sinon.stub();
+			snapperStub.on = sinon.stub();
+			snapperStub.state = sinon.stub().returns({
+				state: sinon.stub()
+			});
 
 			snapConstructorStub.returns(snapperStub);
 

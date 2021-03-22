@@ -1,4 +1,4 @@
-/*
+/**
  * @copyright 2019 Christoph Wurst <christoph@winzerhof-wurst.at>
  *
  * @author 2019 Christoph Wurst <christoph@winzerhof-wurst.at>
@@ -19,18 +19,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import $ from 'jquery'
+
 /**
  * Parses a URL query string into a JS map
  * @param {string} queryString query string in the format param1=1234&param2=abcde&param3=xyz
- * @return {Object.<string, string>} map containing key/values matching the URL parameters
+ * @returns {Object.<string, string>} map containing key/values matching the URL parameters
  */
 export const parse = queryString => {
-	let parts,
-		pos,
-		components,
-		result = {},
-		key,
-		value
+	let pos
+	let components
+	const result = {}
+	let key
 	if (!queryString) {
 		return null
 	}
@@ -38,15 +38,15 @@ export const parse = queryString => {
 	if (pos >= 0) {
 		queryString = queryString.substr(pos + 1)
 	}
-	parts = queryString.replace(/\+/g, '%20').split('&')
+	const parts = queryString.replace(/\+/g, '%20').split('&')
 	for (let i = 0; i < parts.length; i++) {
 		// split on first equal sign
-		var part = parts[i]
+		const part = parts[i]
 		pos = part.indexOf('=')
 		if (pos >= 0) {
 			components = [
 				part.substr(0, pos),
-				part.substr(pos + 1)
+				part.substr(pos + 1),
 			]
 		} else {
 			// key only
@@ -73,14 +73,14 @@ export const parse = queryString => {
 /**
  * Builds a URL query from a JS map.
  * @param {Object.<string, string>} params map containing key/values matching the URL parameters
- * @return {string} String containing a URL query (without question) mark
+ * @returns {string} String containing a URL query (without question) mark
  */
 export const build = params => {
 	if (!params) {
 		return ''
 	}
-	return $.map(params, function (value, key) {
-		var s = encodeURIComponent(key)
+	return $.map(params, function(value, key) {
+		let s = encodeURIComponent(key)
 		if (value !== null && typeof (value) !== 'undefined') {
 			s += '=' + encodeURIComponent(value)
 		}

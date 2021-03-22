@@ -45,36 +45,36 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Test\TestCase;
 
 class ClientFlowLoginControllerTest extends TestCase {
-	/** @var IRequest|\PHPUnit_Framework_MockObject_MockObject */
+	/** @var IRequest|\PHPUnit\Framework\MockObject\MockObject */
 	private $request;
-	/** @var IUserSession|\PHPUnit_Framework_MockObject_MockObject */
+	/** @var IUserSession|\PHPUnit\Framework\MockObject\MockObject */
 	private $userSession;
-	/** @var IL10N|\PHPUnit_Framework_MockObject_MockObject */
+	/** @var IL10N|\PHPUnit\Framework\MockObject\MockObject */
 	private $l10n;
-	/** @var Defaults|\PHPUnit_Framework_MockObject_MockObject */
+	/** @var Defaults|\PHPUnit\Framework\MockObject\MockObject */
 	private $defaults;
-	/** @var ISession|\PHPUnit_Framework_MockObject_MockObject */
+	/** @var ISession|\PHPUnit\Framework\MockObject\MockObject */
 	private $session;
-	/** @var IProvider|\PHPUnit_Framework_MockObject_MockObject */
+	/** @var IProvider|\PHPUnit\Framework\MockObject\MockObject */
 	private $tokenProvider;
-	/** @var ISecureRandom|\PHPUnit_Framework_MockObject_MockObject */
+	/** @var ISecureRandom|\PHPUnit\Framework\MockObject\MockObject */
 	private $random;
-	/** @var IURLGenerator|\PHPUnit_Framework_MockObject_MockObject */
+	/** @var IURLGenerator|\PHPUnit\Framework\MockObject\MockObject */
 	private $urlGenerator;
-	/** @var ClientMapper|\PHPUnit_Framework_MockObject_MockObject */
+	/** @var ClientMapper|\PHPUnit\Framework\MockObject\MockObject */
 	private $clientMapper;
-	/** @var AccessTokenMapper|\PHPUnit_Framework_MockObject_MockObject */
+	/** @var AccessTokenMapper|\PHPUnit\Framework\MockObject\MockObject */
 	private $accessTokenMapper;
-	/** @var ICrypto|\PHPUnit_Framework_MockObject_MockObject */
+	/** @var ICrypto|\PHPUnit\Framework\MockObject\MockObject */
 	private $crypto;
-	/** @var EventDispatcherInterface|\PHPUnit_Framework_MockObject_MockObject */
+	/** @var EventDispatcherInterface|\PHPUnit\Framework\MockObject\MockObject */
 	private $eventDispatcher;
 
 
 	/** @var ClientFlowLoginController */
 	private $clientFlowLoginController;
 
-	public function setUp() {
+	protected function setUp(): void {
 		parent::setUp();
 
 		$this->request = $this->createMock(IRequest::class);
@@ -83,9 +83,9 @@ class ClientFlowLoginControllerTest extends TestCase {
 		$this->l10n
 			->expects($this->any())
 			->method('t')
-			->will($this->returnCallback(function($text, $parameters = array()) {
+			->willReturnCallback(function ($text, $parameters = []) {
 				return vsprintf($text, $parameters);
-			}));
+			});
 		$this->defaults = $this->createMock(Defaults::class);
 		$this->session = $this->createMock(ISession::class);
 		$this->tokenProvider = $this->createMock(IProvider::class);
@@ -200,6 +200,7 @@ class ClientFlowLoginControllerTest extends TestCase {
 			->willReturn('Mac OS X Sync Client');
 		$client = new Client();
 		$client->setName('My external service');
+		$client->setRedirectUri('https://example.com/redirect.php');
 		$this->clientMapper
 			->expects($this->once())
 			->method('getByIdentifier')
@@ -249,7 +250,7 @@ class ClientFlowLoginControllerTest extends TestCase {
 			'guest'
 		);
 		$csp = new Http\ContentSecurityPolicy();
-		$csp->addAllowedFormActionDomain('nc://*');
+		$csp->addAllowedFormActionDomain('https://example.com/redirect.php');
 		$expected->setContentSecurityPolicy($csp);
 		$this->assertEquals($expected, $this->clientFlowLoginController->showAuthPickerPage('MyClientIdentifier'));
 	}
@@ -397,7 +398,16 @@ class ClientFlowLoginControllerTest extends TestCase {
 		$this->assertEquals($expected, $this->clientFlowLoginController->generateAppPassword('MyStateToken'));
 	}
 
-	public function testGeneratePasswordWithPasswordForOauthClient() {
+	/**
+	 * @param string $redirectUri
+	 * @param string $redirectUrl
+	 *
+	 * @testWith
+	 * ["https://example.com/redirect.php", "https://example.com/redirect.php?state=MyOauthState&code=MyAccessCode"]
+	 * ["https://example.com/redirect.php?hello=world", "https://example.com/redirect.php?hello=world&state=MyOauthState&code=MyAccessCode"]
+	 *
+	 */
+	public function testGeneratePasswordWithPasswordForOauthClient($redirectUri, $redirectUrl) {
 		$this->session
 			->expects($this->at(0))
 			->method('get')
@@ -470,7 +480,7 @@ class ClientFlowLoginControllerTest extends TestCase {
 			->willReturn($token);
 		$client = new Client();
 		$client->setName('My OAuth client');
-		$client->setRedirectUri('https://example.com/redirect.php');
+		$client->setRedirectUri($redirectUri);
 		$this->clientMapper
 			->expects($this->once())
 			->method('getByIdentifier')
@@ -480,7 +490,7 @@ class ClientFlowLoginControllerTest extends TestCase {
 		$this->eventDispatcher->expects($this->once())
 			->method('dispatch');
 
-		$expected = new Http\RedirectResponse('https://example.com/redirect.php?state=MyOauthState&code=MyAccessCode');
+		$expected = new Http\RedirectResponse($redirectUrl);
 		$this->assertEquals($expected, $this->clientFlowLoginController->generateAppPassword('MyStateToken', 'MyClientIdentifier'));
 	}
 
